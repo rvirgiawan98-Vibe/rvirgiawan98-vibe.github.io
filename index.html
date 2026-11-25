@@ -142,12 +142,22 @@ footer{padding:30px 0;text-align:center;color:var(--mute);font-size:13px;border-
 <footer>© 2026 RVB Computer Support &amp; System · Islamic IT Analyst &amp; Tech Enthusiast</footer>
 
 <script>
-var WA = ""; // nomor WhatsApp format 62, contoh: 6281234567890
+/* ====== PENGATURAN (edit di sini) ====== */
+var WA = "6281346287135"; // nomor WhatsApp format 62, contoh: 6281234567890
+
+var SOFTWARE = [
+  // Salin blok di bawah ini untuk setiap software. Pisahkan dengan koma.
+  // GRATIS : { name: "Nama Software", desc: "Keterangan singkat", category: "Office", size: "120 MB", url: "https://link-unduhan-anda" },
+  // DIJUAL : { name: "Ebook Panduan Windows (PDF)", desc: "Panduan lengkap", category: "PDF", price: "Rp 25.000", url: "https://lynk.id/namaanda/kode-produk" },
+  //          (tombol otomatis menjadi "Beli". Ingin teks lain? tambahkan btn: "Beli di Lynk")
+];
+/* ======================================= */
+
 if (WA) { var w = document.getElementById("wa"); w.href = "https://wa.me/" + WA; w.style.display = "inline-block"; }
 var $ = function(id){ return document.getElementById(id); };
-var LYNK = ""; // tempel link akun Lynk.id Anda, contoh: "https://lynk.id/namaanda"
+var LYNK = "https://lynk.id/semuapahamteknologi"; // tempel link akun Lynk.id Anda, contoh: "https://lynk.id/namaanda"
 if (/^https:\/\//.test(LYNK)){ $("lynk").href = LYNK; $("produk").style.display = "block"; }
-function fmt(n){ return n > 1048576 ? (n/1048576).toFixed(1) + " MB" : Math.max(1, Math.round(n/1024)) + " KB"; }
+
 try {
   if ("IntersectionObserver" in window){
     var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } }); }, {threshold:.12});
@@ -155,28 +165,26 @@ try {
   } else document.querySelectorAll(".rv").forEach(function(el){ el.classList.add("in"); });
 } catch(e){ document.querySelectorAll(".rv").forEach(function(el){ el.classList.add("in"); }); }
 
-function msg(t){ var box = $("list"); box.textContent = ""; var e = document.createElement("div"); e.className = "empty"; e.textContent = t; box.appendChild(e); }
-function render(items){
-  if (!items.length) return msg("Belum ada software yang tersedia.");
+(function(){
   var box = $("list"); box.textContent = "";
-  items.forEach(function(it){
+  if (!SOFTWARE.length){
+    var e = document.createElement("div"); e.className = "empty";
+    e.textContent = "Belum ada software yang tersedia."; box.appendChild(e); return;
+  }
+  SOFTWARE.forEach(function(it){
     var row = document.createElement("div"); row.className = "item";
     var wrap = document.createElement("div"); wrap.className = "l";
-    var fi = document.createElement("div"); fi.className = "fi";
-    fi.textContent = (it.type === "file" ? (it.filename || "").split(".").pop() : (it.category || "LINK")).slice(0,4).toUpperCase();
+    var fi = document.createElement("div"); fi.className = "fi"; fi.textContent = (it.category || "FILE").slice(0,4).toUpperCase();
     var l = document.createElement("div");
     var t = document.createElement("div"); t.className = "t"; t.textContent = it.name;
     if (it.category){ var g = document.createElement("span"); g.className = "tag"; g.textContent = it.category; t.appendChild(g); }
-    var d = document.createElement("div"); d.className = "d";
-    d.textContent = [it.desc, it.size ? fmt(it.size) : "", it.price].filter(Boolean).join(" · ");
+    var d = document.createElement("div"); d.className = "d"; d.textContent = [it.desc, it.size, it.price].filter(Boolean).join(" · ");
     l.appendChild(t); l.appendChild(d); wrap.appendChild(fi); wrap.appendChild(l);
-    var btn = document.createElement("a"); btn.className = "btn";
-    if (it.type === "file"){ btn.href = "/api/file/" + encodeURIComponent(it.id); btn.textContent = "Unduh"; }
-    else { btn.textContent = it.price ? "Beli" : "Buka"; if (/^https:\/\//.test(it.url || "")){ btn.href = it.url; btn.target = "_blank"; btn.rel = "noopener"; } }
-    row.appendChild(wrap); row.appendChild(btn); box.appendChild(row);
+    var btn = document.createElement("a"); btn.className = "btn"; btn.textContent = it.btn || (it.price ? "Beli" : "Unduh");
+    if (/^https:\/\//.test(it.url || "")){ btn.href = it.url; btn.target = "_blank"; btn.rel = "noopener"; }
+    row.appendChild(wrap); row.appendChild(btn); $("list").appendChild(row);
   });
-}
-fetch("/api/items", {cache:"no-store"}).then(function(r){ return r.json(); }).then(render).catch(function(){ msg("Daftar belum bisa dimuat."); });
+})();
 </script>
 </body>
 </html>
