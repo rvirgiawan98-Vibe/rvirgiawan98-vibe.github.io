@@ -147,10 +147,12 @@ footer{padding:30px 0;text-align:center;color:var(--mute);font-size:13px;border-
 var WA = "6281346287135"; // nomor WhatsApp format 62, contoh: 6281234567890
 
 var SOFTWARE = [
+  { name: "Folder Software Pendukung Tutorial", desc: "Kumpulan software untuk tutorial PDF RVB (dibuka di Google Drive)", category: "Drive", btn: "Buka Folder", url: "https://drive.google.com/drive/folders/1F86Kn8ID5BAGGTp2w5etlLXJqAmJUW60?usp=sharing" },
   // Salin blok di bawah ini untuk setiap software. Pisahkan dengan koma.
   // GRATIS : { name: "Nama Software", desc: "Keterangan singkat", category: "Office", size: "120 MB", url: "https://link-unduhan-anda" },
   // DIJUAL : { name: "Ebook Panduan Windows (PDF)", desc: "Panduan lengkap", category: "PDF", price: "Rp 25.000", url: "https://lynk.id/namaanda/kode-produk" },
   //          (tombol otomatis menjadi "Beli". Ingin teks lain? tambahkan btn: "Beli di Lynk")
+  // FILE LANGSUNG (file ada di folder "software" pada repositori): { name: "Nama Software", desc: "Keterangan", category: "Utilitas", size: "20 MB", url: "software/namafile.zip" },
 ];
 /* ======================================= */
 
@@ -183,6 +185,7 @@ try {
     l.appendChild(t); l.appendChild(d); wrap.appendChild(fi); wrap.appendChild(l);
     var btn = document.createElement("a"); btn.className = "btn"; btn.textContent = it.btn || (it.price ? "Beli" : "Unduh");
     if (/^https:\/\//.test(it.url || "")){ btn.href = it.url; btn.target = "_blank"; btn.rel = "noopener"; }
+    else if (/^software\//.test(it.url || "")){ btn.href = it.url; btn.setAttribute("download", ""); }
     row.appendChild(wrap); row.appendChild(btn); $("list").appendChild(row);
   });
 })();
